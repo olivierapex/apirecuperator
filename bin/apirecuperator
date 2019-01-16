@@ -1,0 +1,13 @@
+#!/usr/bin/python3
+import apirecuperator
+import sys
+
+
+try:
+    config_file_path = sys.argv[1]
+except NameError:
+    print("You most specify a config file")
+    print("An example of this file can be found at '/usr/share/doc/apirecuperator' ")
+    sys.exit(2)
+
+wsgi_app = apirecuperator.run_recuperator(config_file_path)

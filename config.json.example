@@ -1,0 +1,19 @@
+{
+    "logstash": {
+        "enabled": false,
+        "host": "",
+        "port": 5500,
+        "version": 3
+    },
+    "mongodb": {
+        "enabled": false,
+        "host": "",
+        "db": "",
+        "coll": "",
+        "user": "",
+        "pass": ""
+    },
+    "log": {
+        "path": "/var/log/apirecuperator/local-query.log"
+    }
+}

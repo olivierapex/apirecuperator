@@ -1,0 +1,88 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          <sysadmin>
+# Required-Start:    $local_fs $network $named $time $syslog
+# Required-Stop:     $local_fs $network $named $time $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Description:       <apirecuperator>
+### END INIT INFO
+
+SCRIPT="/usr/bin/uwsgi --pythonpath /usr/bin/python3 --http :9090 --wsgi-file /bin/apirecuperator --set pyargv=/etc/apirecuperator/config.json --enable-threads --callable wsgi_app"
+RUNAS=root
+
+PIDFILE=/var/run/apirecuperator.pid
+LOGFILE=/var/log/apirecuperator/apirecuperator.log
+
+get_pid() {
+  ps -ef | grep -v awk | awk '/uwsgi.*apirecuperator/{print $2}'
+}
+
+start() {
+  PID=$(get_pid)
+  if [ "$PID"  ]; then
+    echo 'Service already running' >&2
+    return 1
+  fi
+  echo 'Starting apirecuperator service…' >&2
+  local CMD="$SCRIPT &> \"$LOGFILE\" & echo \$!"
+  su -c "$CMD" $RUNAS > "$PIDFILE"
+  PID=$(get_pid)
+  if [ "$PID"  ]; then
+    echo 'apirecuperator Service started' >&2
+  else
+    echo "ECHEC"
+    echo "See logs for errors.."
+  fi
+}
+
+stop() {
+  PID=$(get_pid)
+  if [ ! "$PID"  ]; then
+    echo 'apirecuperator Service not running' >&2
+    return 1
+  fi
+  echo 'Stopping apirecuperator service…' >&2
+  kill $PID && rm -f "$PIDFILE"
+  PID=$(get_pid)
+  if [ "$PID" ]; then
+    echo 'apirecuperator Service stopped' >&2
+  else
+    echo 'FAIL to stop apirecuperator'
+  fi
+}
+
+status() {
+  PID=$(get_pid)
+  if [ "$PID" ]; then
+    echo "apirecuperator is running."
+    exit 0
+  else
+    echo "apirecuperator is not running."
+    exit 1
+  fi
+
+}
+
+restart() {
+  stop
+  sleep 5 
+  start
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status
+    ;;
+  restart)
+    restart
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+esac
