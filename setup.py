@@ -46,7 +46,7 @@ setup(
     scripts=['bin/apirecuperator'],
 
     data_files=[
-        ('/bin', ['bin/facelesscloud-server']),
+        ('/bin', ['bin/apirecuperator']),
         ('/etc/init.d', ['etc/init.d/apirecuperator']),
         ('/usr/share/doc/apirecuperator', ['config.json.example']),
     ],

@@ -48,10 +48,6 @@
       }
     }
 
-### config
-
-  Configuration by cities, using node.override attributes.
-
 ## Authors and maintainers
 
   Originally written by Olivier Giroux
